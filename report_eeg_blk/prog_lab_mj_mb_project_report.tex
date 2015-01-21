@@ -1,0 +1,203 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+
+\usepackage{listings}
+\usepackage{csvsimple}
+
+\usepackage{pdfpages}
+\usepackage{siunitx}
+
+\usepackage{mdframed}
+\usepackage{alltt}
+
+% \author{Magdalena Jóźwiakowska\\nr indeksu 374108\\jozwiakowska@gmail.com\\mj18416@st.amu.edu.pl}
+% \author{Mikołaj Buchwald\\nr indeksu 385542\\mikolaj.buchwald@gmail.com\\mb83904@st.amu.edu.pl}
+\author{
+Magdalena Jóźwiakowska\\nr indeksu 374108\\\texttt{jozwiakowska@gmail.com}\\\texttt{mj18416@st.amu.edu.pl}
+\and
+Mikołaj Buchwald\\nr indeksu 385542\\\texttt{mikolaj.buchwald@gmail.com}\\\texttt{mb83904@st.amu.edu.pl}
+}
+\title{Laboratorium Programowanie\\Sprawozdanie z projektu zaliczeniowego\\ 
+"Wykrywanie artefaktów mrugania w sygnale EEG przy pomocy Sztucznych Sieci Neuronalnych"}
+
+
+\begin{document}
+
+%%% color definition
+    % \definecolor{codegreen}{rgb}{0,0.6,0}
+    % \definecolor{codegray}{rgb}{0.5,0.5,0.5}
+    % \definecolor{codepurple}{rgb}{0.58,0,0.82}
+    % \lstdefinestyle{scilab}{
+    %     backgroundcolor=\color{white},
+    %     commentstyle=\color{codegreen},
+    %     keywordstyle=\color{codepurple},
+    %     numberstyle=\tiny\color{black},
+    %     stringstyle=\color{red},
+    %     basicstyle=\footnotesize,
+    %     breakatwhitespace=false,
+    %     breaklines=true,
+    %     keepspaces=true,
+    %     numbers=left,
+    %     showstringspaces=false,
+    % }
+
+\maketitle
+% % %
+
+\begin{abstract}
+    W ninejeszym sprawozdaniu zaprezentowano użycie Sztucznych Sieci Neuronalnych (ang. Artificial Neural Network - ANN) w celu detekcji artefaktów mrugania w sygnale pochodzącym z elektroencefalografu (EEG). Dane przetwarzane na potrzeby ninejszego sprawozdania pochodzą z jednoelektrodowego EEG MindWave Mobile firmy NeuroSky. Dane pobrano i podzielono na paczki za pomocą języka programowania Python. Do szkolenia ANN oraz kategoryzacji poszczególnych paczek sygnału wykorzystano bibliotekę języka programowania C - FANN (Fast Artificial Neural Network). Wykresy wygenerowano za pomocą programu Scilab.
+\end{abstract}
+% % % % %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    `INTRODUCTION    INTRODUCTION    INTRODUCTION             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Wprowadzenie}
+    
+    \subsection{Opis zbioru danych}
+% % %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    MATERIALS AND METHODS    MATERIALS AND METHODS            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\section{Materiały i metody}
+    Przebadano 3 osoby w wieku 20-22 lata. 
+    Do zbierania danych użyto EEG MindWave Moblie firmy NeuroSky. Urządzenie owo posiada jedną elektrodę czołową. Próbkuje ono z częstotliwością 512 razy na sekundę.
+    Badanie z użyciem EEG przeprowadzono na komputerze. Eksperyment wykonano w środowisku PsychoPy korzystając z języka programowania Python.
+
+    Badanie składało się z dwóch etapów: 
+    W pierwszym etapie zbierano dane potrzebne do wyszkolenia sieci neuronalnej. Badani mieli za zadanie mrugać gdy zobaczą czerwony kwadrat. Kwadrat ów pojawiał się co 5 sekund na 5 sekund, po czym znikał. Po tym następowało 5 sekund przerwy, w której wyświetlane było jedynie szare tło (bez bodźca). Ten etap trwał 60 sekund. Zatem bodziec wyświetlono 6 razy.
+    Drugi etap polegał na kategoryzacji sygnału przez sieć neuronalną. Podczas 60-ciu sekund, które trwało to badanie w losowym momencie (o pełnej sekundzie) pojawiał się bodziec (czerwony kwadrat). W ciągu tej minuty bodziec pojawiał się 14 razy. Było to podyktowane średnią ilością mrugnieć jakie wykunuje człowiek w ciągu minuty [ŹRÓDŁO - może być to samo, które mówi, że człowiek mruga co 2-10 sekund. Prosta arytmetyka.]
+    Zadanie osoby badanej w tej części polegało na wykonaniu pojedynczego mrugnięcia gdy zobaczy ona bodziec.
+    Minimalna różnica czasowa między eskpozycjami bodźców wynosiła 2 sekundy. Owa założona różnica podyktowana była dwoma czynnikami. Średni interwał między spontanicznymi ludzkimi mrugnięciami wynosi od 2 do 10 sekund [ŹRÓDŁO]. Ponadto przerwa krótsza niż 2 sekundy generuje sporo dodatkowych artefaktów, które utrudniają poprawne skategoryzowanie mrugnięcia oraz odróżnienie jednego mrugnięcia od drugiego. 
+
+    Podczas etapu szkoleniowego dane zapisywane były do dwóch plików w formacie csv: norma\_raw.csv (zawierającego dane z okresu, w których osoba badana nie mrugała) oraz blink\_raw.csv (dane pochodzące z czasu gdy osoba badana mrugała). Za pomocą skryptu w języku programowania Python podzielono dane z obu plików *.csv na paczki po 128 próbek każda (1/4 sekund). Ten sam skrypt ekstraktował cechy ze wspomnianych paczek. Cechy, które ekstraktowane były na potrzeby ninejszego projektu to: odchylienie standardowe sygnału, suma amplitud ujemnych, suma przejść sygnału przez oś OX (0). Przy doborze cech częściowo inspirowano się artykułem [ŹRÓDŁO].
+
+    Następnie bazując na danych wyekstraktowanych wcześniej stworzono oraz wyszkonolo Sztuczną Sieć Neuronalną (ANN). Output z owego szkolenia (dla każdej osoby) dostępny jest w dodatku do sprawozdania. 
+
+    Dane z eksperymentu polegającego na pojedynczych mrugnięciach również podzielono na paczki po 128 próbek. Wykorzystując wcześniej wyszkoloną sieć skategoryzowano każdą paczkę jako mrugnięcie lub nie mrugnięcie. Jedno mrugnięcie trwa średnio więcej niż 128 próbek (1/4 sekundy) [ŹRÓDŁO]. Artefakty w sygnale wywołane mrugnięciem trwają dłużej niż mrugnięcie [ŹRÓDŁO czy własne obserwacje]. Dlatego przyjęto następujące zasady orzekania o poprawności mrugnięcia:
+    \newline
+    * * *
+    \newline
+    % Zasady orzekania o poprawności kategoryzacji.
+    Założenie wstępne: 
+    
+    Osoba badana mrugała tylko w przypadku reakcji na bodziec (tak w sesji szkolenia sieci jak i sesji kategoryzacji).
+    Egzaminator obserwował osobę badaną. Z badania wyłączono sesje badania, w których badany mrugał w innym przypadku niż pojawienie się bodźca.
+    \newline
+    * * *
+
+    Uwagi wstępne: 
+    Przyjmuje się rozróżnienie pomiędzy czterema niezależnymi obiektami:
+    \begin{itemize}
+        \item popranie skategoryzowana paczka
+        \item niepopranie skategoryzowana paczka
+        \item popranie skategoryzowane mrugnięcie
+        \item niepopranie skategoryzowane mrugnięcie
+    \end{itemize}
+    Wprowadzenie powyższego rozróżnienia uzasadnione zostanie poniżej.
+    \newline
+    * * *
+
+    Kategoryzacja mrugnięcia uznana jest za poprawną wtedy i tylko wtedy gdy spełnione są trzy poniższe warunki:
+    \begin{enumerate}
+        \item Przynajmniej jedna paczka danych, która pokrywa się czasowo z bodźcem została skategoryzowana jako mrugnięcie.
+        \item Nie więcej niż 4 paczki (jedna za drugą) z których pierwsza pokrywa się czasowo z bodźcem zostały skategoryzowana jako mrugnięcie.
+        \item Jedna lub więcej paczek na przestrzeni czterach kolejnych, z których pierwsza pokrywa się czasowo z bodźcem, zostały skategoryzowana jako mrugnięcie.
+    \end{enumerate}
+    W każdym innym przypadku skategoryzowanie paczki danych jako mrugnięcie uważane jest za niepoprawne.
+    \newline
+    * *
+   
+    Wszelszelkie paczki skategoryzowane jako niepoprawne grupuje się w następujący sposób jako niepoprawnie skategoryzowane mrugnięcie:
+    \begin{enumerate}
+        \item Jeżeli jakakolwiek z paczek została niepoprawnie skategoryzowana, to zarówno ją jak i trzy następujące po niej paczki niepoprawnie skategoryzowane (jeśli takowe występują) uważa się za niepoprawnie skategoryzowane mrugnięcie.
+        \item Do dalszego rozpoznawania ciągu paczek jako nie-mrugnięć nie bierze się pod uwagę ciągów wcześniej skategoryzowanych jako nie-mrugnięcie (ani ich poszczególnych elementów).
+    \end{enumerate}
+    * * *
+    
+    W nawiązaniu do powyższego proponujemy ustalenie trzech wskaźników (dotyczących etapu kategoryzacji):
+    \begin{enumerate}
+        \item Wskaźnik poprawności kategoryzacji mrugnięcia jako odpowiedzi na bodziec.
+    Jest to stosunek poprawnie skategoryzowanych mrugnięć do ilości bodźców zaprazentowanych w danym eksperymencie.
+        \item Wskaźnik braku braku poprawności mrugnięcia w odniesieniu do ilości bodźców w eksperymencie.
+    Jest to stosunek ilości błędnie skategoryzowanych mrugnięć do ilości bodźców w eksperymencie.
+    \newline
+        \item Wskaźnik braku poprawności mrugnięcia w odniesieniu do ilości poprawnie skategoryzowanych mrugnięć.
+    Jest to stosunek ilości błędnie skategoryzowanych mrugnięć do ilości poprawnie skategoryzowanych mrugnięć. 
+    \end{enumerate}
+    Etap kategoryzacji dla każdej osoby był oceniany ze względu na trzy powyższe wskaźniki.
+ % % %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    RESULTS    RESULTS    RESULTS                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Wyniki}
+    %
+
+    \subsection{Czym są i gdzie występują fale beta}
+    
+% % %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    DISCUSSION    DISCUSSION    DISCUSSION                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Dyskusja}
+
+% % %
+
+\newpage
+\section{Appendix}
+    \subsection{Skrypty}
+        \subsubsection{Eksperyment w PsychoPy zbierający dane do szkolenia ANN}
+            Hehe.
+        \subsubsection{Skrypt C FANN tworzący oraz szkolący \\Sztuczną Sieć Neuronalną}
+            Hehe.
+        \subsubsection{Eksperyment w PsychoPy zbierający dane \\do późniejszej kategoryzacji przez ANN}
+            Hehe.
+        \subsubsection{Skrypt C FANN kategoryzujący poszczególne paczki danych \\jako mrugnięcie lub nie-mrugnięcie}
+            Hehe.
+        \subsubsection{Skrypt Python generujący pliki z wynikami}
+            Hehe.
+        \subsubsection{Skrypt Scilab generujący wykresy}
+            Hehe.
+    \subsection{Szczegółowe wyniki}
+        \subsubsection{Osoba pierwsza}
+        \subsubsection{Osoba druga}
+        \subsubsection{Osoba trzecia}
+
+% \lstset{style=scilab}
+% \lstinputlisting[language=Scilab]{eeg_128.sce}
+% % %
+
+\newpage
+\begin{thebibliography}{50}
+%     \bibitem{} Augustyniak P., \emph{Przetwarzanie sygnałów elektrodiagnostycznych}, AGH Uczelniane Wydawnictwa Naukowo-Dydaktyczne, 2001.
+%     \bibitem{} http://www.biosemi.com/pics/cap\_128\_layout\_medium.jpg
+%     \bibitem{} http://frontalcortex.com/images/eeg/1020labels.jpg        
+%     \bibitem{} http://zasoby.open.agh.edu.pl/~10swlabaj/fourier/skladowe.html
+%     \bibitem{} http://en.wikipedia.org/wiki/Electroencephalography
+%     \bibitem{} https ://brain.fuw.edu.pl/edu/EEG:Metody\_analizy\_sygna\%C5\%82\%C3\%B3w\_EEG\_-\_analiza\_w\_dziedzinie\_czasu
+%     \bibitem{} http://en.wikipedia.org/wiki/10-20\_system\_\%28EEG%29
+\end{thebibliography}
+
+% mdframed and alltt example %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %\begin{mdframed}
+    %\begin{alltt}
+    %signal\_mean   
+    %    1.9177947  
+    %\end{alltt}
+    %\end{mdframed} 
+
+\end{document}

@@ -1,0 +1,40 @@
+# # #
+report_eeg_blk_15_01_15
+# #
+
+2. Materiały i metody Przebadano 3 osoby w wieku 20-22 lata. Badanie przeprowadzono na komputerze. 
+Eksperyment wykonano w środowisku PsychoPy korzystając z języka programowania Python.
+
+Badanie składało się z dwóch etapów: W pierwszym etapie zbierano dane potrzebne do wyszkolenia sieci neuronalnej. Badani mieli za zadanie mrugać gdy zobaczą czerwony kwadrat. Kwadrat ów pojawiał się co 5 sekund na 5 sekund, po czym znikał. Ten etap trwał 60 sekund. Drugi etap polegał na kategoryzacji sygnału przez sieć neuronalną. Podczas 60-ciu sekund, które trwało to badanie w losowym momencie (o pełnej sekundzie) pojawiał się bodziec (czerwony kwadrat). Minimalna różnica czasowa między bodźcami wynosiła 1sekundę. Zadanie osoby badanej polegało na wykonaniu pojedynczego mrugnięcia gdy zobaczy ona bodziec.
+
+# TODO: put here sth
+
+Zasady orzekania o poprawności kategoryzacji.
+
+Założenie wstępne: osoba badana mrugała tylko w przypadku reakcji na bodziec (tak w sesji szkolenia sieci jak i sesji kategoryzacji).
+Egzaminator obserwował osobę badaną. Z badania wyłączono sesje badania, w których badany mrugał w innym przypadku niż pojawienie się bodźca.
+
+Kategoryzacja uznana jest za poprawną wtedy i tylko wtedy gdy:
+* Przynajmniej jedna paczka danych, która pokrywa się czasowo z bodźcem została skategoryzowana jako mrugnięcie.
+* Nie więcej niż 4 paczki (jedna za drugą) z których pierwsza pokrywa się czasowo z bodźcem zostały skategoryzowana jako mrugnięcie.
+* Jedna lub więcej paczek na przestrzeni czterach kolejnych, z których pierwsza pokrywa się czasowo z bodźcem, zostały skategoryzowana jako mrugnięcie.
+
+W każdym innym przypadku skategoryzowanie paczki danych jako mrugnięcie uważane jest za false-positive.
+Kategoryzacja czterech następujących po sobie paczek jako mrugnięcie uważane jest za jeden false-positive.
+#
+
+W nawiązaniu do powyższego proponujemy ustalenie trzech wskaźników (dotyczących sesji kategoryzacji):
+
+1. Wskaźnik poprawności kategoryzacji mrugnięcia jako odpowiedzi na bodziec.
+Jest to stosunek poprawnych kategoryzacji do ilości bodźców zaprazentowanych.
+
+2. Wskaźnik false-positive w odniesieniu do ilości bodźców w eksperymencie.
+Jest to stosunek ilości błędnie skategoryzowanych mrugnięć do ilości bodźców w eksperymencie.
+
+3. Wskaźnik false-positive w odniesieniu do ilości poprawnie skategoryzowanych bodźców.
+Jest to stosunek ilości błędnie skategoryzowanych mrugnięć do ilości poprawnie skategoryzowanych bodźców. 
+#
+
+Każda skategoryzowana sesja była oceniana ze względu na trzy powyższe wskaźniki.
+
+# # #
